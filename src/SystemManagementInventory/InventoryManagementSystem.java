@@ -35,7 +35,7 @@ public class InventoryManagementSystem {
                     categorizeItems();
                     break;
                 case 5:
-                    System.out.println("Place orders");
+                    placeOrder();
                     break;
                 case 6:
                     saveToFileSerialize();
@@ -44,8 +44,8 @@ public class InventoryManagementSystem {
                     loadFromFileSerialize();
                     break;
                 case 0:
-                    System.out.println("Exiting...");
                     saveToFileSerialize();
+                    System.out.println("Exiting...");
                     break;
                 default:
                     System.out.println("Invalid command. Please try again.");
@@ -247,4 +247,48 @@ public class InventoryManagementSystem {
             System.out.println("Error loading data from file: " + exc.getMessage());
         }
     }
+
+    private void placeOrder() {
+        Order order = new Order();
+        try {
+            System.out.print("Enter Item ID to order: ");
+            String itemId = reader.readLine();
+            InventoryItem itemToOrder = null;
+            for (InventoryItem item : inventoryList) {
+                if (item.getItemId().equals(itemId)) {
+                    itemToOrder = item;
+                    break;
+                }
+            }
+
+            if (itemToOrder != null) {
+                System.out.print("Enter quantity to order: ");
+                int quantity = Integer.parseInt(reader.readLine());
+                if (quantity > 0 && quantity <= itemToOrder.getQuantity()) {
+                    order.addItemToOrder(itemToOrder, quantity);
+                    System.out.println("Added to order: " + quantity + " x " + itemToOrder.getItemName());
+                    itemToOrder.setQuantity(itemToOrder.getQuantity() - quantity);
+                } else {
+                    System.out.println("Invalid quantity. Available in stock: " + itemToOrder.getQuantity());
+                    return;
+                }
+            } else {
+                System.out.println("Item with ID " + itemId + " not found.");
+                return;
+            }
+
+            System.out.println("Order total: " + order.getTotalOrderAmount() + " LV.");
+            System.out.print("Enter payment amount: ");
+            double paymentAmount = Double.parseDouble(reader.readLine());
+            System.out.print("Enter payment method: ");
+            String paymentMethod = reader.readLine();
+            Payment payment = new Payment(paymentAmount, paymentMethod);
+            order.processOrder(payment);
+
+            System.out.println("Order processed successfully.");
+        } catch (IOException | NumberFormatException exc) {
+            System.out.println("Error reading input: " + exc.getMessage());
+        }
+    }
+
 }
