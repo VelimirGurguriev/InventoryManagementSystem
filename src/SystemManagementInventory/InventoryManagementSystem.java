@@ -1,5 +1,7 @@
 package SystemManagementInventory;
 
+import ApplicationConsoleCommerce.PaymentProcessor;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +11,14 @@ import java.util.Map;
 public class InventoryManagementSystem {
     private List<InventoryItem> inventoryList;
     private BufferedReader reader;
+    private List<Order> orderList;
+    private PaymentProcessor paymentProcessor;
 
     public InventoryManagementSystem() {
         reader = new BufferedReader(new InputStreamReader(System.in));
         inventoryList = new ArrayList<>();
+        orderList = new ArrayList<>();
+        paymentProcessor = new PaymentProcessor();
     }
 
     // method that calls the menu and processes the user input
@@ -291,4 +297,34 @@ public class InventoryManagementSystem {
         }
     }
 
+    // Payment processing methods
+    private void addItemToCart(Order order) {
+        try {
+            System.out.print("Enter Item ID to add in cart: ");
+            String itemID = reader.readLine();
+            InventoryItem orderedItem = null;
+            for (InventoryItem currentItem : inventoryList) {
+                if (currentItem.getItemId().equals(itemID)) {
+                    orderedItem = currentItem;
+                    break;
+                }
+            }
+
+            if (orderedItem != null) {
+                System.out.println("Enter quantity to order: ");
+                int quantity = Integer.parseInt(reader.readLine());
+                if (0 < quantity && quantity <= orderedItem.getQuantity()) {
+                    order.addItemToOrder(orderedItem, quantity);
+                    System.out.println("Successfully added to cart: " + quantity + " x "
+                        + orderedItem.getItemName());
+                } else {
+                    System.out.println("Invalid quantity. Available in stock: " + orderedItem.getQuantity());
+                }
+            } else {
+                System.out.println("Item with ID: " + itemID + " was not found.");
+            }
+        } catch (IOException | NumberFormatException exc) {
+            System.out.println("Error reading input: " + exc.getMessage());
+        }
+    }
 }
