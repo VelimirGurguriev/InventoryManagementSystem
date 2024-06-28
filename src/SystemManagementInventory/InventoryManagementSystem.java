@@ -1,8 +1,6 @@
 package SystemManagementInventory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +36,9 @@ public class InventoryManagementSystem {
                     break;
                 case 5:
                     System.out.println("Place orders");
+                    break;
+                case 6:
+                    saveToFileSerialize();
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -210,6 +211,16 @@ public class InventoryManagementSystem {
                 currentItem.displayDescription();
                 System.out.println("--------------------------");
             }
+        }
+    }
+
+    public void saveToFileSerialize() {
+        String fileName = "database.txt";
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(inventoryList);
+            System.out.println("Inventory data successfully saved to database.");
+        } catch (IOException exc) {
+            System.out.println("Error during saving: " + exc.getMessage());
         }
     }
 }

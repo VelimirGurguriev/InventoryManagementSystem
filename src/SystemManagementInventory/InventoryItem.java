@@ -1,6 +1,8 @@
 package SystemManagementInventory;
 
-public class InventoryItem extends AbstractItem {
+import java.io.Serializable;
+
+public class InventoryItem extends AbstractItem implements Serializable {
     private String itemId;
     private int quantity;
 
