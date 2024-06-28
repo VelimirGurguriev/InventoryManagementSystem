@@ -1,11 +1,14 @@
 package SystemManagementInventory;
 
-public class Inventory extends AbstractItem {
+public class InventoryItem extends AbstractItem {
     private String itemId;
     private int quantity;
 
-    public Inventory(String itemName, String category, double price, boolean breakable, boolean perishable) {
+    public InventoryItem(String itemName, String category, double price, boolean breakable, boolean perishable,
+                         String itemId, int quantity) {
         super(itemName, category, price, breakable, perishable);
+        this.itemId = itemId;
+        this.quantity = quantity;
     }
 
     @Override
