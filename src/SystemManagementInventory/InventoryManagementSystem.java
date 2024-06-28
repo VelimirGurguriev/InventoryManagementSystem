@@ -26,9 +26,11 @@ public class InventoryManagementSystem {
                     break;
                 case 2:
                     System.out.println("Remove item by ID");
+                    removeById();
                     break;
                 case 3:
                     System.out.println("Display list of items");
+                    displayList();
                     break;
                 case 4:
                     System.out.println("Categorize items");
@@ -136,4 +138,50 @@ public class InventoryManagementSystem {
             System.out.println("Invalid input format.");
         }
     }
+
+    public void displayList() {
+        if (inventoryList.isEmpty()) {
+            System.out.println("No items in the inventory.");
+        } else {
+            System.out.println("Inventory Items:");
+            System.out.println("--------------------------");
+            for (InventoryItem item : inventoryList) {
+                item.displayDescription();
+                System.out.println("--------------------------");
+            }
+        }
+    }
+
+    public void removeById() {
+        if (inventoryList.isEmpty()) {
+            System.out.println("Inventory is empty. Cannot remove items.");
+            return;
+        }
+
+        System.out.println("Enter remove ID: ");
+        String removeID;
+        try {
+            removeID = reader.readLine().trim();
+        } catch (IOException exc) {
+            System.out.println("Error reading ID: " + exc.getMessage());
+            return;
+        }
+
+        boolean isFound = false;
+        for (int i = 0; i < inventoryList.size(); i++) {
+            InventoryItem currentItem = inventoryList.get(i);
+            if (currentItem.getItemId().equals(removeID)) {
+                inventoryList.remove(i);
+                System.out.println("Item " + removeID + " successfully removed.");
+                isFound = true;
+                break;
+            }
+        }
+
+        if (!isFound) {
+            System.out.println("Item " + removeID + " was not found in inventory.");
+        }
+    }
+
+    
 }

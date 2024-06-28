@@ -35,7 +35,7 @@ public abstract class AbstractItem implements Item, Categorizable,
 
     @Override
     public void displayDescription() {
-        System.out.println("Item: " + itemName + "\n Costs " + price + "LV. \nCategory: " + category +
+        System.out.println("Item: " + itemName + "\nCosts " + price + "LV.\nCategory: " + category +
                 ".\nBreakable: " + breakable + ".\nPerishable: " + perishable + ".");
     }
 
