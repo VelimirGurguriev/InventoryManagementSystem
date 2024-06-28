@@ -43,7 +43,7 @@ public abstract class AbstractItem implements Item, Categorizable,
         System.out.println("Item: " + itemName + "\nCosts: " + formattedPrice + " LV.\nCategory: " + category +
                 "\nBreakable: " + breakable + "\nPerishable: " + perishable);
     }
-    
+
     // Categorizable interface method implementation
     @Override
     public void setItemCategory(String category) {
