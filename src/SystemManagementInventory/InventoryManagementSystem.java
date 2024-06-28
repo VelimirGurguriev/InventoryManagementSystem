@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryManagementSystem {
     private List<InventoryItem> inventoryList;
@@ -29,11 +31,10 @@ public class InventoryManagementSystem {
                     removeById();
                     break;
                 case 3:
-                    System.out.println("Display list of items");
                     displayList();
                     break;
                 case 4:
-                    System.out.println("Categorize items");
+                    categorizeItems();
                     break;
                 case 5:
                     System.out.println("Place orders");
@@ -183,5 +184,32 @@ public class InventoryManagementSystem {
         }
     }
 
-    
+    public void categorizeItems() {
+        if (inventoryList.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        Map<String, List<InventoryItem>> categoryMap = new HashMap<>();
+
+        for (InventoryItem currentItem : inventoryList) {
+            String category = currentItem.getItemCategory();
+            if (!categoryMap.containsKey(category)) {
+                categoryMap.put(category, new ArrayList<>());
+            }
+            categoryMap.get(category).add(currentItem);
+        }
+
+        System.out.println("Catagorized items:");
+        for (Map.Entry<String, List<InventoryItem>> entry : categoryMap.entrySet()) {
+            String category = entry.getKey();
+            List<InventoryItem> items = entry.getValue();
+            System.out.println("==========================");
+            System.out.println("Category: " + category + "\n");
+            for (InventoryItem currentItem : items) {
+                currentItem.displayDescription();
+                System.out.println("--------------------------");
+            }
+        }
+    }
 }
