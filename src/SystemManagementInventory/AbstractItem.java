@@ -2,6 +2,8 @@ package SystemManagementInventory;
 
 import java.io.Serializable;
 
+/* AbstractItem class contains the default implementation of the Item interface methods
+as well as the common variables that every item has. */
 public abstract class AbstractItem implements Item, Categorizable,
         Breakable, Perishable, Sellable, Serializable {
     private String itemName;
@@ -37,10 +39,11 @@ public abstract class AbstractItem implements Item, Categorizable,
 
     @Override
     public void displayDescription() {
-        System.out.println("Item: " + itemName + "\nCosts " + price + "LV.\nCategory: " + category +
+        String formattedPrice = String.format("%.2f", price);
+        System.out.println("Item: " + itemName + "\nCosts: " + formattedPrice + " LV.\nCategory: " + category +
                 "\nBreakable: " + breakable + "\nPerishable: " + perishable);
     }
-
+    
     // Categorizable interface method implementation
     @Override
     public void setItemCategory(String category) {

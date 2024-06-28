@@ -15,6 +15,7 @@ public class InventoryManagementSystem {
         inventoryList = new ArrayList<>();
     }
 
+    // method that calls the menu and processes the user input
     public void run() {
         int choice;
         do {
@@ -284,7 +285,6 @@ public class InventoryManagementSystem {
             String paymentMethod = reader.readLine();
             Payment payment = new Payment(paymentAmount, paymentMethod);
             order.processOrder(payment);
-
             System.out.println("Order processed successfully.");
         } catch (IOException | NumberFormatException exc) {
             System.out.println("Error reading input: " + exc.getMessage());
