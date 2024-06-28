@@ -1,6 +1,7 @@
 package SystemManagementInventory;
 
 public interface Breakable {
-    boolean isBreakable();
+    void setToBreakable();
+    boolean checkBreakable();
     void handleBreakage();
 }

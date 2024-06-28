@@ -1,7 +1,8 @@
 package SystemManagementInventory;
 
 public interface Item {
-    void getDetails();
-    void calculateValue();
+    void setItemName(String name);
+    String getItemName();
+    double calculateValue();
     void displayDescription();
 }

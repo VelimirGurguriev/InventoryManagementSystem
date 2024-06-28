@@ -1,6 +1,7 @@
 package SystemManagementInventory;
 
 public interface Perishable {
-    boolean isPerishable();
+    void setToPerishable();
+    boolean checkPerishable();
     void handleExpiration();
 }

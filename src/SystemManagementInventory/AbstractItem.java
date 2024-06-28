@@ -18,62 +18,75 @@ public abstract class AbstractItem implements Item, Categorizable,
 
     // Item interface method implementation
     @Override
-    public void getDetails() {
-
+    public void setItemName(String name) {
+        this.itemName = name;
     }
 
     @Override
-    public void calculateValue() {
-
+    public String getItemName() {
+        return itemName;
     }
+
+    @Override
+    public abstract double calculateValue();
 
     @Override
     public void displayDescription() {
-
+        System.out.println("Item: " + itemName + "\n Costs " + price + "LV. \nCategory: " + category +
+                ".\nBreakable: " + breakable + ".\nPerishable: " + perishable + ".");
     }
 
     // Categorizable interface method implementation
     @Override
     public void setItemCategory(String category) {
-
+        this.category = category;
     }
 
     @Override
     public String getItemCategory() {
-        return "";
+        return category;
     }
 
     // Breakable interface method implementation
     @Override
-    public boolean isBreakable() {
-        return false;
+    public void setToBreakable() {
+        this.breakable = true;
+    }
+
+    @Override
+    public boolean checkBreakable() {
+        return breakable;
     }
 
     @Override
     public void handleBreakage() {
-
+        // to do
     }
 
     // Perishable interface method implementation
     @Override
-    public boolean isPerishable() {
-        return false;
+    public void setToPerishable() {
+        this.perishable = true;
+    }
+
+    @Override
+    public boolean checkPerishable() {
+        return perishable;
     }
 
     @Override
     public void handleExpiration() {
-
+        // to do
     }
-
 
     // Sellable interface method implementation
     @Override
     public void setItemPrice(double price) {
-
+        this.price = price;
     }
 
     @Override
     public double getItemPrice() {
-        return 0;
+        return price;
     }
 }
