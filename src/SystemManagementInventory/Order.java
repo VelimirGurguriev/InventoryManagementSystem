@@ -24,6 +24,7 @@ public class Order {
             items.put(item, quantity);
         }
         totalOrderAmount += item.getItemPrice() * quantity;
+
     }
 
     public void processOrder(PaymentMethod paymentMethod) {
@@ -36,10 +37,12 @@ public class Order {
         for (Map.Entry<InventoryItem, Integer> entry : items.entrySet()) {
             InventoryItem item = entry.getKey();
             int quantity = entry.getValue();
-            System.out.println(quantity + " of " + item.getItemName()
-                    + " costing " + item.getItemPrice() + "LV. for each");
+            String formattedPrice = String.format("%.2f", item.getItemPrice());
+            System.out.println("x" + quantity + " " + item.getItemName()
+                    + ", price per each " + formattedPrice + "LV.");
         }
-        System.out.println("Total order amount: " + totalOrderAmount + "LV.");
+        String formattedTotal = String.format("%.2f", totalOrderAmount);
+        System.out.println("Total order amount: " + formattedTotal + "LV.");
     }
 
     public Map<InventoryItem, Integer> getItems() {

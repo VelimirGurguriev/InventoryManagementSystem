@@ -1,5 +1,8 @@
 package SystemManagementInventory;
 
+import ApplicationConsoleCommerce.CreditCardPayment;
+import ApplicationConsoleCommerce.PayPalPayment;
+import ApplicationConsoleCommerce.PaymentMethod;
 import ApplicationConsoleCommerce.PaymentProcessor;
 
 import java.io.*;
@@ -13,6 +16,7 @@ public class InventoryManagementSystem {
     private BufferedReader reader;
     private List<Order> orderList;
     private PaymentProcessor paymentProcessor;
+    private Order currentOrder;
 
     public InventoryManagementSystem() {
         reader = new BufferedReader(new InputStreamReader(System.in));
@@ -28,11 +32,9 @@ public class InventoryManagementSystem {
             choice = getUserInput();
             switch (choice) {
                 case 1:
-                    System.out.println("Add item option");
                     addItem();
                     break;
                 case 2:
-                    System.out.println("Remove item by ID");
                     removeById();
                     break;
                 case 3:
@@ -42,12 +44,16 @@ public class InventoryManagementSystem {
                     categorizeItems();
                     break;
                 case 5:
-                    placeOrder();
+                    addItemToCart(currentOrder);
                     break;
                 case 6:
-                    saveToFileSerialize();
+                    viewCart(currentOrder);
                     break;
                 case 7:
+                    processOrder(currentOrder);
+                    currentOrder = new Order();
+                    break;
+                case 8:
                     loadFromFileSerialize();
                     break;
                 case 0:
@@ -97,7 +103,10 @@ public class InventoryManagementSystem {
         System.out.println("2. Remove item by ID.");
         System.out.println("3. Display list of items.");
         System.out.println("4. Categorize items.");
-        System.out.println("5. Place orders.");
+        System.out.println("5. Add item to cart.");
+        System.out.println("6. View cart.");
+        System.out.println("7. Process order.");
+        System.out.println("8. Load items from database.");
         System.out.println("0. Exit.");
     }
 
@@ -229,6 +238,7 @@ public class InventoryManagementSystem {
         String fileName = "database.txt";
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(inventoryList);
+            oos.writeObject(orderList);
             System.out.println("Inventory data successfully saved to database.");
         } catch (IOException exc) {
             System.out.println("Error during saving: " + exc.getMessage());
@@ -255,48 +265,6 @@ public class InventoryManagementSystem {
         }
     }
 
-    private void placeOrder() {
-        Order order = new Order();
-        try {
-            System.out.print("Enter Item ID to order: ");
-            String itemId = reader.readLine();
-            InventoryItem itemToOrder = null;
-            for (InventoryItem item : inventoryList) {
-                if (item.getItemId().equals(itemId)) {
-                    itemToOrder = item;
-                    break;
-                }
-            }
-
-            if (itemToOrder != null) {
-                System.out.print("Enter quantity to order: ");
-                int quantity = Integer.parseInt(reader.readLine());
-                if (quantity > 0 && quantity <= itemToOrder.getQuantity()) {
-                    order.addItemToOrder(itemToOrder, quantity);
-                    System.out.println("Added to order: " + quantity + " x " + itemToOrder.getItemName());
-                    itemToOrder.setQuantity(itemToOrder.getQuantity() - quantity);
-                } else {
-                    System.out.println("Invalid quantity. Available in stock: " + itemToOrder.getQuantity());
-                    return;
-                }
-            } else {
-                System.out.println("Item with ID " + itemId + " not found.");
-                return;
-            }
-
-            System.out.println("Order total: " + order.getTotalOrderAmount() + " LV.");
-            System.out.print("Enter payment amount: ");
-            double paymentAmount = Double.parseDouble(reader.readLine());
-            System.out.print("Enter payment method: ");
-            String paymentMethod = reader.readLine();
-            Payment payment = new Payment(paymentAmount, paymentMethod);
-            order.processOrder(payment);
-            System.out.println("Order processed successfully.");
-        } catch (IOException | NumberFormatException exc) {
-            System.out.println("Error reading input: " + exc.getMessage());
-        }
-    }
-
     // Payment processing methods
     private void addItemToCart(Order order) {
         try {
@@ -311,7 +279,7 @@ public class InventoryManagementSystem {
             }
 
             if (orderedItem != null) {
-                System.out.println("Enter quantity to order: ");
+                System.out.print("Enter quantity to order: ");
                 int quantity = Integer.parseInt(reader.readLine());
                 if (0 < quantity && quantity <= orderedItem.getQuantity()) {
                     order.addItemToOrder(orderedItem, quantity);
@@ -326,5 +294,76 @@ public class InventoryManagementSystem {
         } catch (IOException | NumberFormatException exc) {
             System.out.println("Error reading input: " + exc.getMessage());
         }
+    }
+
+    private void processOrder(Order order) {
+        try {
+            if (order.getItems().isEmpty()) {
+                System.out.println("Empty cart. Please first add some items.");
+                return;
+            }
+        } catch (NullPointerException exc) {
+            System.out.println("Empty cart. Please first add some items.");
+            return;
+        }
+
+        System.out.println("Order total amount: " + order.getTotalOrderAmount() + "LV.");
+        try {
+            System.out.print("Enter payment method (card/paypal): ");
+            String paymentMethodType = reader.readLine().trim().toLowerCase();
+            System.out.print("Enter payment amount: ");
+            double paymentAmount = Double.parseDouble(reader.readLine());
+
+            PaymentMethod paymentMethod;
+            if (paymentMethodType.equals("credit")) {
+                System.out.print("Enter card number: ");
+                String cardNumber = reader.readLine();
+                System.out.print("Enter card holder name: ");
+                String cardHolder = reader.readLine();
+                System.out.print("Enter expiration date (MM/YY): ");
+                String expirationDate = reader.readLine();
+                System.out.print("Enter CVV: ");
+                String cvv = reader.readLine();
+                paymentMethod = new CreditCardPayment(cardNumber, cardHolder, expirationDate, cvv);
+            } else if (paymentMethodType.equals("paypal")) {
+                System.out.print("Enter PayPal email: ");
+                String email = reader.readLine();
+                System.out.print("Enter PayPal password: ");
+                String password = reader.readLine();
+                paymentMethod = new PayPalPayment(email, password);
+            } else {
+                System.out.println("Invalid payment method.");
+                return;
+            }
+
+            if (paymentProcessor.processPayment(paymentMethod, paymentAmount)) {
+                order.processOrder(paymentMethod);
+                orderList.add(order);
+                updateInventoryQuantities(order);
+                System.out.println("Order processed successfully.");
+            } else {
+                System.out.println("Payment failed. Order not processed.");
+            }
+        } catch (IOException | NumberFormatException exc) {
+            System.out.println("Error reading input: " + exc.getMessage());
+        }
+    }
+
+    private void updateInventoryQuantities(Order order) {
+        for (Map.Entry<InventoryItem, Integer> entry : order.getItems().entrySet()) {
+            InventoryItem item = entry.getKey();
+            int quantityOrdered = entry.getValue();
+            item.setQuantity(item.getQuantity() - quantityOrdered);
+        }
+    }
+
+    private void viewCart(Order order) {
+        try {
+            System.out.println("Current Cart:");
+            order.displayOrder();
+        } catch (NullPointerException exc) {
+            System.out.println("Cart is currently empty.");
+        }
+
     }
 }
