@@ -4,6 +4,9 @@ public class InventoryItem extends AbstractItem {
     private String itemId;
     private int quantity;
 
+    public InventoryItem() {
+    }
+
     public InventoryItem(String itemName, String category, double price, boolean breakable, boolean perishable,
                          String itemId, int quantity) {
         super(itemName, category, price, breakable, perishable);

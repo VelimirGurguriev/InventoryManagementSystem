@@ -8,6 +8,9 @@ public abstract class AbstractItem implements Item, Categorizable,
     private boolean breakable;
     private boolean perishable;
 
+    public AbstractItem() {
+    }
+
     public AbstractItem(String itemName, String category, double price, boolean breakable, boolean perishable) {
         this.itemName = itemName;
         this.category = category;
