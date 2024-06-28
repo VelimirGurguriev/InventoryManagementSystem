@@ -16,4 +16,10 @@ public class FragileItem extends InventoryItem {
     public double getWeight() {
         return weight;
     }
+
+    @Override
+    public void displayDescription() {
+        super.displayDescription();
+        System.out.println("Weight: " + weight);
+    }
 }

@@ -16,4 +16,10 @@ public class ElectronicsItem extends InventoryItem {
     public int getWarrantyYears() {
         return warrantyYears;
     }
+
+    @Override
+    public void displayDescription() {
+        super.displayDescription();
+        System.out.println("Warranty years: " + warrantyYears);
+    }
 }

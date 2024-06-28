@@ -34,4 +34,10 @@ public class InventoryItem extends AbstractItem {
     public int getQuantity() {
         return quantity;
     }
+
+    @Override
+    public void displayDescription() {
+        super.displayDescription();
+        System.out.println("Item ID: " + itemId + "\nQuantity: " + quantity);
+    }
 }

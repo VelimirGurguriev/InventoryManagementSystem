@@ -16,4 +16,10 @@ public class GroceryItem extends InventoryItem {
     public String getExpirationDate() {
         return expirationDate;
     }
+
+    @Override
+    public void displayDescription() {
+        super.displayDescription();
+        System.out.println("Expiration date: " + expirationDate);
+    }
 }
