@@ -45,6 +45,7 @@ public class InventoryManagementSystem {
                     break;
                 case 0:
                     System.out.println("Exiting...");
+                    saveToFileSerialize();
                     break;
                 default:
                     System.out.println("Invalid command. Please try again.");
@@ -242,8 +243,8 @@ public class InventoryManagementSystem {
                     System.out.println("Inventory data successfully loaded from database.");
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading data from file: " + e.getMessage());
+        } catch (IOException | ClassNotFoundException exc) {
+            System.out.println("Error loading data from file: " + exc.getMessage());
         }
     }
 }
