@@ -40,6 +40,9 @@ public class InventoryManagementSystem {
                 case 6:
                     saveToFileSerialize();
                     break;
+                case 7:
+                    loadFromFileSerialize();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -221,6 +224,26 @@ public class InventoryManagementSystem {
             System.out.println("Inventory data successfully saved to database.");
         } catch (IOException exc) {
             System.out.println("Error during saving: " + exc.getMessage());
+        }
+    }
+
+    public void loadFromFileSerialize() {
+        String fileName = "database.txt";
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            Object obj = ois.readObject();
+            if (!(obj instanceof List)) {
+                System.out.println("File does not contain a list.");
+            } else {
+                inventoryList = (List<InventoryItem>) obj;
+                if (inventoryList.isEmpty()) {
+                    System.out.println("File loaded, but contains NO list elements.");
+                } else {
+                    System.out.println("Inventory data successfully loaded from database.");
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading data from file: " + e.getMessage());
         }
     }
 }

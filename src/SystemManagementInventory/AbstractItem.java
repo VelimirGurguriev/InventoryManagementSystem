@@ -1,7 +1,9 @@
 package SystemManagementInventory;
 
+import java.io.Serializable;
+
 public abstract class AbstractItem implements Item, Categorizable,
-        Breakable, Perishable, Sellable {
+        Breakable, Perishable, Sellable, Serializable {
     private String itemName;
     private String category;
     private double price;
@@ -36,7 +38,7 @@ public abstract class AbstractItem implements Item, Categorizable,
     @Override
     public void displayDescription() {
         System.out.println("Item: " + itemName + "\nCosts " + price + "LV.\nCategory: " + category +
-                ".\nBreakable: " + breakable + ".\nPerishable: " + perishable + ".");
+                "\nBreakable: " + breakable + "\nPerishable: " + perishable);
     }
 
     // Categorizable interface method implementation
